@@ -51,6 +51,8 @@ Built with **Flask + React + Vite + Tailwind CSS**, it enables users to look up 
 
 ## 🎯 Author
 
+![License](https://img.shields.io/badge/license-Proprietary-red)
+
 **Built by Nobody-O**  
 Final Year BSc Computer Science Project  
 GitHub: [https://github.com/Nobody-O](https://github.com/Nobody-O)
