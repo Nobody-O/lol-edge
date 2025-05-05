@@ -1,0 +1,38 @@
+[
+  {
+    "info": {
+      "participants": [
+        {
+          "summonerName": "Kanenas",
+          "championName": "Ahri",
+          "kills": 8,
+          "deaths": 3,
+          "assists": 7,
+          "win": true,
+          "totalMinionsKilled": 180,
+          "goldEarned": 12000
+        }
+      ],
+      "gameMode": "CLASSIC",
+      "gameDuration": 1800
+    }
+  },
+  {
+    "info": {
+      "participants": [
+        {
+          "summonerName": "Kanenas",
+          "championName": "Garen",
+          "kills": 5,
+          "deaths": 4,
+          "assists": 10,
+          "win": false,
+          "totalMinionsKilled": 150,
+          "goldEarned": 9500
+        }
+      ],
+      "gameMode": "CLASSIC",
+      "gameDuration": 1700
+    }
+  }
+]
