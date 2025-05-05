@@ -13,7 +13,7 @@ import ProfileSkeleton from '../components/ProfileSkeleton';
 import Toast from '../components/Toast';
 import WinrateGraph from '../components/WinrateGraph';
 
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 const INITIAL_LOAD = 10;
 
 export default function SearchSummoner() {
