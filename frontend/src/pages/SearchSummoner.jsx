@@ -12,8 +12,8 @@ import ProfileCard from '../components/ProfileCard';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 import Toast from '../components/Toast';
 import WinrateGraph from '../components/WinrateGraph';
+import { API_BASE } from '../config/apiBase';
 
-const API_URL = import.meta.env.VITE_API_URL;
 const INITIAL_LOAD = 10;
 
 export default function SearchSummoner() {
@@ -69,7 +69,7 @@ export default function SearchSummoner() {
     setToastMessage('');
 
     try {
-      const res = await axios.get(`${API_URL}/summoner`, {
+      const res = await axios.get(`${API_BASE}/summoner`, {
         params: { name: name.trim(), tag: tag.trim(), region: currentRegion },
       });
 
@@ -77,7 +77,7 @@ export default function SearchSummoner() {
       setMatches(res.data.matches);
 
       try {
-        const liveRes = await axios.get(`${API_URL}/livegame`, {
+        const liveRes = await axios.get(`${API_BASE}/livegame`, {
           params: { puuid: res.data.profile.puuid, region: currentRegion },
         });
 
