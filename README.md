@@ -8,9 +8,7 @@ Built with **Flask + React + Vite + Tailwind CSS**, it enables users to look up 
 
 ---
 
-## 🖥️ Screenshots
-
-![Search Summoner Screenshot](https://your-screenshot-url.com/preview.png) <!-- Optional image -->
+## Screenshots
 
 ---
 

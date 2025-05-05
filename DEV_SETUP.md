@@ -4,7 +4,7 @@ This guide walks you through how to run both the frontend and backend locally fo
 
 ---
 
-## 🧩 1. Clone the Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Nobody-O/lol-edge.git
@@ -61,7 +61,7 @@ The frontend will run at:
 
 ---
 
-## ✅ Local Test Flow
+## Local Test Flow
 
 1. Go to `http://localhost:5173`
 2. Search for a summoner like `Faker#KR1`
@@ -82,7 +82,7 @@ lol-edge/
 
 ---
 
-## 🔐 Notes
+## Notes
 
 - Keep your `.env` files **out of GitHub** by listing them in `.gitignore`
 - Your Riot API key must be active and tied to your developer account
@@ -91,12 +91,12 @@ lol-edge/
 
 ---
 
-## 🌍 Production Links
+## Production Links
 
-| Type      | URL                                           |
-|-----------|-----------------------------------------------|
-| Frontend  | https://lol-edge.vercel.app                   |
-| Backend   | https://lol-edge-backend.onrender.com         |
+| Type     | URL                                   |
+| -------- | ------------------------------------- |
+| Frontend | https://lol-edge.vercel.app           |
+| Backend  | https://lol-edge-backend.onrender.com |
 
 ---
 
