@@ -1,9 +1,18 @@
-// ----------------- getChampionImageURL.js -----------------
+// -----------------------------------------------------------------------------
+// © 2025 LoL Edge — All rights reserved.
+// getChampionImageURL.js
+//
+// Provides utility functions for retrieving correct Data Dragon (ddragon)
+// image URLs for champions, items, summoner spells, runes, and profile icons.
+// Includes fallbacks and Riot naming edge cases.
+// -----------------------------------------------------------------------------
 
+// ----------------- Riot Data Dragon Constants -----------------
 const VERSION = '15.9.1';
 const BASE = `https://ddragon.leagueoflegends.com/cdn/${VERSION}`;
 const CDN = `https://ddragon.leagueoflegends.com`;
 
+// ----------------- Local Fallback Icons -----------------
 export const FALLBACK_ICON = '/fallbacks/placeholder.png';
 
 const FALLBACKS = {
@@ -15,6 +24,8 @@ const FALLBACKS = {
   item0: '/fallbacks/item_blank.png',
 };
 
+// ----------------- Champion Naming Overrides -----------------
+// Riot uses legacy internal names for some champions; override them here
 const overrideMap = {
   fiddlesticks: 'FiddleSticks',
   wukong: 'MonkeyKing',
@@ -28,6 +39,7 @@ const overrideMap = {
   nunu: 'Nunu',
 };
 
+// ----------------- Champion Icon -----------------
 export function getChampionIcon(name) {
   if (!name) return FALLBACK_ICON;
   const key = name.toLowerCase();
@@ -35,6 +47,7 @@ export function getChampionIcon(name) {
   return `${BASE}/img/champion/${clean}.png`;
 }
 
+// ----------------- Summoner Spell Icon -----------------
 export function getSummonerSpellIcon(spellName) {
   if (!spellName) return FALLBACK_ICON;
   const name = spellName.charAt(0).toUpperCase() + spellName.slice(1);
@@ -42,26 +55,29 @@ export function getSummonerSpellIcon(spellName) {
   return `${BASE}/img/spell/${fallbackKey}.png`;
 }
 
+// ----------------- Item Icon -----------------
 export function getItemIcon(itemId) {
   if (!itemId || itemId === 0) return FALLBACKS.item0;
   return `${BASE}/img/item/${itemId}.png`;
 }
 
+// ----------------- Profile Icon -----------------
 export function getProfileIcon(iconId) {
   if (!iconId) return FALLBACK_ICON;
   return `${BASE}/img/profileicon/${iconId}.png`;
 }
 
+// ----------------- Passive Icon -----------------
 export function getPassiveIcon(icon) {
   if (!icon) return FALLBACK_ICON;
   return `${BASE}/img/passive/${icon}`;
 }
 
-// ----------------- Rune Icons -----------------
+// ----------------- Rune Icon Mapping -----------------
 import runeIdToPath from './runeIdToPath';
 
 export function getRuneIcon(perkId) {
-  const id = Number(perkId); // make sure it's a number
+  const id = Number(perkId);
   const path = runeIdToPath[id];
 
   if (!path) {
@@ -69,11 +85,10 @@ export function getRuneIcon(perkId) {
     return FALLBACK_ICON;
   }
 
-  const url = `https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/${path}`;
-  console.log(`✅ Rune icon loaded: ${url}`);
-  return url;
+  return `${CDN}/cdn/img/perk-images/Styles/${path}`;
 }
 
+// ----------------- Ranked Badge Icon -----------------
 export function getRankBadge(tier) {
   if (!tier) return '/fallbacks/unranked.png';
   const formatted = tier.charAt(0).toUpperCase() + tier.slice(1).toLowerCase();

@@ -1,3 +1,9 @@
+/**
+ * © 2025 LoL Edge – All rights reserved.
+ * MatchModal.jsx – Displays full match details in a modal view.
+ * Author: Nobody-O
+ */
+
 import React from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -8,21 +14,25 @@ import {
   getSummonerSpellIcon,
 } from '../data/getChampionImageURL';
 
+// Main modal component
 export default function MatchModal({ match, onClose }) {
   if (!match || !match.info) return null;
 
   const { info } = match;
   const participants = info.participants || [];
 
+  // Separate teams
   const blueTeam = participants.filter((p) => p.teamId === 100);
   const redTeam = participants.filter((p) => p.teamId === 200);
 
+  // Format duration into MM:SS
   const formatDuration = (seconds) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}m ${s}s`;
   };
 
+  // Map of summoner spell IDs to names (used for icon URLs)
   const spellMap = {
     1: 'Boost',
     3: 'Exhaust',
@@ -39,12 +49,15 @@ export default function MatchModal({ match, onClose }) {
 
   const getSpellName = (id) => spellMap[id] || 'Dot';
 
+  // ----------------------------
+  // Renders individual player card in match
+  // ----------------------------
   const renderPlayer = (player) => (
     <div
       key={player.puuid}
       className="flex items-center justify-between bg-gray-800 rounded-lg p-3 mb-1 hover:bg-gray-700 transition text-sm"
     >
-      {/* Champion */}
+      {/* Champion Icon & Name */}
       <div className="flex items-center gap-2 w-1/4">
         <img
           src={getChampionIcon(player.championName)}
@@ -69,7 +82,7 @@ export default function MatchModal({ match, onClose }) {
         <p className="text-gray-400 text-xs">{player.totalMinionsKilled} CS</p>
       </div>
 
-      {/* Gold + Damage */}
+      {/* Gold + Damage Dealt */}
       <div className="text-center w-1/6">
         <p className="text-yellow-400 text-sm">
           {player.goldEarned.toLocaleString()}g
@@ -79,7 +92,7 @@ export default function MatchModal({ match, onClose }) {
         </p>
       </div>
 
-      {/* Spells */}
+      {/* Summoner Spells */}
       <div className="flex gap-1 w-1/6">
         {[player.summoner1Id, player.summoner2Id].map((id, i) => {
           const spell = getSpellName(id);
@@ -99,7 +112,7 @@ export default function MatchModal({ match, onClose }) {
         })}
       </div>
 
-      {/* Runes */}
+      {/* Primary and Secondary Runes */}
       <div className="flex gap-1 w-1/6">
         {player.perks?.styles?.slice(0, 2).map((style, i) => {
           let iconUrl;
@@ -107,12 +120,14 @@ export default function MatchModal({ match, onClose }) {
           if (i === 0) {
             const perkId = style?.selections?.[0]?.perk;
             if (!perkId) return null;
-            iconUrl = getRuneIcon(perkId); // Primary: use selected perk icon
+            iconUrl = getRuneIcon(perkId); // Primary style: actual rune
           } else {
             const styleId = style?.style;
             let styleName = 'Unknown';
-
             switch (styleId) {
+              case 8000:
+                styleName = 'Precision';
+                break;
               case 8100:
                 styleName = 'Domination';
                 break;
@@ -125,11 +140,7 @@ export default function MatchModal({ match, onClose }) {
               case 8400:
                 styleName = 'Resolve';
                 break;
-              case 8000:
-                styleName = 'Precision';
-                break;
             }
-
             iconUrl = `/fallbacks/styles/${styleName}.png`;
           }
 
@@ -149,7 +160,7 @@ export default function MatchModal({ match, onClose }) {
         })}
       </div>
 
-      {/* Items */}
+      {/* Items (0-6) */}
       <div className="flex gap-1 flex-wrap justify-end w-1/4">
         {[...Array(7).keys()].map((i) => {
           const id = player[`item${i}`];
@@ -172,9 +183,13 @@ export default function MatchModal({ match, onClose }) {
     </div>
   );
 
+  // ----------------------------
+  // Portal-rendered modal component (fixed to screen)
+  // ----------------------------
   return createPortal(
     <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex justify-center items-center">
       <div className="bg-gray-900 rounded-xl p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-700">
+        {/* Modal header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-white text-xl font-bold">
             {info.gameMode} • {formatDuration(info.gameDuration)}
@@ -186,6 +201,8 @@ export default function MatchModal({ match, onClose }) {
             ✕
           </button>
         </div>
+
+        {/* Match body: two team columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h3 className="text-blue-400 font-bold text-sm mb-2">Blue Side</h3>

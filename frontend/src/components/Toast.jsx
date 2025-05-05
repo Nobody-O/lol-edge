@@ -1,14 +1,24 @@
-// -------------------- Toast.jsx --------------------
+// -----------------------------------------------------------------------------
+// © 2025 LoL Edge — All rights reserved.
+// Toast.jsx
+// Brief pop-up message component with auto-dismiss behavior.
+// -----------------------------------------------------------------------------
+
+// ----------------- Imports -----------------
 import React, { useEffect } from 'react';
 
+// ----------------- Toast Component -----------------
 export default function Toast({ message, onClose }) {
+  // Auto-dismiss the toast after 3.5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
     }, 3500);
-    return () => clearTimeout(timer);
+
+    return () => clearTimeout(timer); // Cleanup on unmount
   }, [onClose]);
 
+  // ----------------- Render -----------------
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
       <div

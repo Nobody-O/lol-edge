@@ -1,3 +1,9 @@
+/**
+ * © 2025 LoL Edge – All rights reserved.
+ * ProfileCard.jsx – Displays a user's basic info, ranked stats, and top champions.
+ * Author: Nobody-O
+ */
+
 // ----------------- Imports -----------------
 import React, { useState } from 'react';
 import {
@@ -7,10 +13,12 @@ import {
 } from '../data/getChampionImageURL';
 import TopMastery from './TopMastery';
 
-// ----------------- ProfileCard Component -----------------
+// ----------------- Component: ProfileCard -----------------
 export default function ProfileCard({ profile }) {
+  // If no profile is passed (edge case), don't render
   if (!profile) return null;
 
+  // Destructure profile props
   const {
     summonerName,
     summonerLevel,
@@ -22,8 +30,10 @@ export default function ProfileCard({ profile }) {
     tagLine,
   } = profile;
 
+  // State to handle "copy to clipboard" UI feedback
   const [copied, setCopied] = useState(false);
 
+  // ----------------- Clipboard Copy Handler -----------------
   const handleCopy = () => {
     const fullId =
       riotId || (tagLine ? `${summonerName}#${tagLine}` : summonerName);
@@ -33,6 +43,7 @@ export default function ProfileCard({ profile }) {
     });
   };
 
+  // ----------------- Renders Ranked Info Card -----------------
   const renderRankCard = (data, queueType) => {
     const isUnranked = !data || !data.tier;
     const { tier, rank, leaguePoints, wins, losses } = data || {};
@@ -65,6 +76,8 @@ export default function ProfileCard({ profile }) {
               </>
             )}
           </div>
+
+          {/* Highlight high rank players */}
           {!isUnranked &&
             ['DIAMOND', 'MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(
               tier.toUpperCase()
@@ -78,8 +91,10 @@ export default function ProfileCard({ profile }) {
     );
   };
 
+  // ----------------- Render Output -----------------
   return (
     <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
+      {/* Profile Header */}
       <div className="flex items-center gap-6 mb-6">
         <img
           src={getProfileIcon(profileIconId)}
@@ -102,11 +117,13 @@ export default function ProfileCard({ profile }) {
         </div>
       </div>
 
+      {/* Ranked Cards: Solo / Flex */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {renderRankCard(rankedSolo, 'Ranked Solo')}
         {renderRankCard(rankedFlex, 'Ranked Flex')}
       </div>
 
+      {/* Top Mastery Display */}
       {topChampions && topChampions.length > 0 && (
         <TopMastery masteryData={topChampions} />
       )}

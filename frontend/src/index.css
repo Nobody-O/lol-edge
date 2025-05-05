@@ -1,6 +1,13 @@
+/* --------------------------------------------------- */
+/* index.css — Tailwind Directives & Base Custom Styles */
+/* © 2025 LoL Edge — All rights reserved               */
+/* --------------------------------------------------- */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ------------- Global Element Defaults ------------- */
 
 html,
 body {
@@ -8,18 +15,26 @@ body {
   font-family: 'Poppins', 'Lato', 'Helvetica', 'Arial', sans-serif;
 }
 
+/* ------------- Typography and Links ------------- */
+
 a {
   @apply text-blue-400 hover:text-blue-500 transition;
 }
+
+/* ------------- Button Styling ------------- */
 
 button {
   @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition;
 }
 
+/* ------------- Forms: Inputs & Dropdowns ------------- */
+
 input,
 select {
   @apply bg-gray-800 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
+
+/* ------------- Custom Animation: Slide-Up ------------- */
 
 @keyframes slide-up {
   from {

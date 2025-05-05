@@ -1,8 +1,13 @@
+// -----------------------------------------------------------------------------
+// © 2025 LoL Edge — All rights reserved.
+// LoadingSpinner.jsx
+// Simple spinning loader component used while data is being fetched.
+// -----------------------------------------------------------------------------
+
 // ----------------- Imports -----------------
 import React from 'react';
 
 // ----------------- LoadingSpinner Component -----------------
-
 export default function LoadingSpinner() {
   // ----------------- Render -----------------
   return (

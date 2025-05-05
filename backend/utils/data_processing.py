@@ -1,12 +1,23 @@
-# ----------------- Profile Processing -----------------
+# ============================================================
+#  © 2025 LoL Edge – All rights reserved.
+#  Data transformation utilities for processing Riot API JSON.
+#  Author: Nobody-O
+# ============================================================
+
+# ============================================================
+# PROFILE DATA PROCESSING
+# ============================================================
 
 def process_summoner_profile(profile_data, rank_data, mastery_data):
     """
-    Combine Profile + Ranked + Mastery into a clean single JSON object
-    for frontend.
+    Combines raw Riot API data into a structured format that 
+    the frontend can easily consume. This includes:
+    - Summoner profile info
+    - Ranked Solo and Flex queues
+    - Top 3 champion masteries
     """
 
-    # --- Basic Profile Info ---
+    # Basic profile fields
     processed = {
         "summonerName": profile_data.get('name'),
         "summonerLevel": profile_data.get('summonerLevel'),
@@ -15,10 +26,11 @@ def process_summoner_profile(profile_data, rank_data, mastery_data):
         "id": profile_data.get('id'),  # Summoner ID
     }
 
-    # --- Ranked Info ---
+    # Initialize ranked data placeholders
     processed["rankedSolo"] = None
     processed["rankedFlex"] = None
 
+    # Fill rankedSolo and rankedFlex based on queue type
     for entry in rank_data:
         if entry['queueType'] == "RANKED_SOLO_5x5":
             processed["rankedSolo"] = {
@@ -39,7 +51,7 @@ def process_summoner_profile(profile_data, rank_data, mastery_data):
                 "winRate": calculate_winrate(entry['wins'], entry['losses']),
             }
 
-    # --- Champion Mastery (Top 3) ---
+    # Extract top 3 champions by mastery points
     top_masteries = mastery_data[:3] if mastery_data else []
     processed["topChampions"] = []
 
@@ -52,19 +64,23 @@ def process_summoner_profile(profile_data, rank_data, mastery_data):
 
     return processed
 
-# ----------------- Match History Processing -----------------
+# ============================================================
+# MATCH HISTORY PROCESSING
+# ============================================================
 
 def process_match_history(matches, puuid):
     """
-    Extract minimal clean match info from raw match JSONs.
+    Processes a list of full match objects and extracts
+    minimal summary data for frontend display.
     """
-
     simplified_matches = []
 
     for match in matches:
         try:
+            # Locate participant using PUUID
             participant = next(p for p in match['info']['participants'] if p['puuid'] == puuid)
 
+            # Construct a basic match summary dictionary
             match_summary = {
                 "matchId": match['metadata']['matchId'],
                 "championName": participant['championName'],
@@ -76,23 +92,26 @@ def process_match_history(matches, puuid):
                 "gameMode": match['info']['gameMode'],
                 "role": participant['teamPosition'],
                 "timePlayed": match['info']['gameDuration'],
-                # (Optional: more fields can be extracted later)
+                # Additional fields can be added here if needed
             }
 
             simplified_matches.append(match_summary)
 
         except Exception as e:
-            # Skip any broken matches
+            # Skip malformed or incomplete match data
             print(f"[Warning] Failed to process match: {e}")
             continue
 
     return simplified_matches
 
-# ----------------- Utility -----------------
+# ============================================================
+# HELPER FUNCTION: WIN RATE CALCULATION
+# ============================================================
 
 def calculate_winrate(wins, losses):
     """
-    Calculate win rate as a percentage.
+    Calculates win rate percentage from total wins and losses.
+    Returns 0 if no games have been played.
     """
     total_games = wins + losses
     if total_games == 0:

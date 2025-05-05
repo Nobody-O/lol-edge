@@ -1,8 +1,14 @@
-// -------------------- SearchSummoner.jsx --------------------
+/**
+ * © 2025 LoL Edge – All rights reserved.
+ * SearchSummoner.jsx – Core component for summoner search and display.
+ * Author: Nobody-O
+ */
+
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+// Component imports
 import ChampionStats from '../components/ChampionStats';
 import ErrorCard from '../components/ErrorCard';
 import LiveBanner from '../components/LiveBanner';
@@ -12,16 +18,21 @@ import ProfileCard from '../components/ProfileCard';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 import Toast from '../components/Toast';
 import WinrateGraph from '../components/WinrateGraph';
+
+// API base URL (switches between local and production automatically)
 import { API_BASE } from '../config/apiBase';
 
+// Number of matches shown initially
 const INITIAL_LOAD = 10;
 
 export default function SearchSummoner() {
+  // Handle URL query parameters (e.g., ?name=Kanenas&tag=xxx)
   const [searchParams] = useSearchParams();
   const queryName = searchParams.get('name');
   const queryTag = searchParams.get('tag');
   const queryRegion = searchParams.get('region');
 
+  // Local component state
   const [riotId, setRiotId] = useState('');
   const [region, setRegion] = useState(queryRegion || 'euw1');
   const [profile, setProfile] = useState(null);
@@ -33,6 +44,7 @@ export default function SearchSummoner() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_LOAD);
   const [toastMessage, setToastMessage] = useState('');
 
+  // Automatically populate fields and trigger search on page load (if query exists)
   useEffect(() => {
     if (queryName && queryTag) {
       setRiotId(`${queryName}#${queryTag}`);
@@ -41,6 +53,7 @@ export default function SearchSummoner() {
     }
   }, [queryName, queryTag, queryRegion]);
 
+  // Handles both manual form submission and auto-triggered search
   const handleSubmit = async (
     e,
     overrideName = null,
@@ -53,6 +66,7 @@ export default function SearchSummoner() {
       overrideName && overrideTag
         ? [overrideName, overrideTag]
         : riotId.trim().split('#');
+
     const currentRegion = overrideRegion || region;
 
     if (!name || !tag) {
@@ -69,6 +83,7 @@ export default function SearchSummoner() {
     setToastMessage('');
 
     try {
+      // Fetch summoner profile and matches
       const res = await axios.get(`${API_BASE}/summoner`, {
         params: { name: name.trim(), tag: tag.trim(), region: currentRegion },
       });
@@ -77,6 +92,7 @@ export default function SearchSummoner() {
       setMatches(res.data.matches);
 
       try {
+        // Fetch live game info separately
         const liveRes = await axios.get(`${API_BASE}/livegame`, {
           params: { puuid: res.data.profile.puuid, region: currentRegion },
         });
@@ -101,12 +117,14 @@ export default function SearchSummoner() {
     }
   };
 
+  // Filters matches by queue type (SOLO, FLEX, ARAM)
   const filteredMatches = matches.filter((match) => {
     if (filter === 'ALL') return true;
     const queueIds = { SOLO: 420, FLEX: 440, ARAM: 450 };
     return match.info?.queueId === queueIds[filter];
   });
 
+  // Sliced list of matches currently visible
   const visibleMatches = filteredMatches.slice(0, visibleCount);
 
   return (
@@ -144,6 +162,7 @@ export default function SearchSummoner() {
           <option value="na1">NA</option>
           <option value="kr">KR</option>
         </select>
+
         <button
           type="submit"
           className="bg-blue-600 text-white font-bold p-2 rounded-lg hover:bg-blue-700 transition w-full md:w-1/4"
@@ -152,6 +171,7 @@ export default function SearchSummoner() {
         </button>
       </form>
 
+      {/* Conditional Rendering */}
       {liveGame && <LiveBanner game={liveGame} />}
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage('')} />
@@ -163,12 +183,14 @@ export default function SearchSummoner() {
         <ProfileCard profile={profile} matches={matches} />
       )}
 
+      {/* Match History Section */}
       {profile && matches.length > 0 && (
         <div id="match-history" className="mt-8">
           <h2 className="text-2xl font-bold text-white mb-4 text-center">
             Recent Matches
           </h2>
 
+          {/* Queue Type Filter Buttons */}
           <div className="flex justify-center gap-3 mb-4 text-sm">
             {['ALL', 'SOLO', 'FLEX', 'ARAM'].map((q) => (
               <button
@@ -191,12 +213,14 @@ export default function SearchSummoner() {
           <WinrateGraph matches={filteredMatches} />
           <ChampionStats matches={visibleMatches} />
 
+          {/* Match Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {visibleMatches.map((match, i) => (
               <MatchCard key={i} match={match} puuid={profile.puuid} />
             ))}
           </div>
 
+          {/* Load More Button */}
           {visibleCount < filteredMatches.length && (
             <div className="flex justify-center mt-6">
               <button
@@ -210,6 +234,7 @@ export default function SearchSummoner() {
         </div>
       )}
 
+      {/* Fallback UI for empty queues */}
       {!loading && profile && filteredMatches.length === 0 && (
         <div className="text-center text-gray-400 mt-6">
           No matches found for selected queue.

@@ -171,3 +171,11 @@ const championIdToName = {
   915: 'Ambessa',
 };
 export default championIdToName;
+// -----------------------------------------------------------------------------
+// © 2025 LoL Edge — All rights reserved.
+// championIdToName.js
+//
+// This file provides a mapping between champion numeric IDs (used in Riot's API)
+// and their respective champion name keys, required for icon resolution, tooltips,
+// and profile features throughout the frontend.
+// -----------------------------------------------------------------------------

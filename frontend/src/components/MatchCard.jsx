@@ -1,3 +1,9 @@
+// -----------------------------------------------------------------------------
+// © 2025 LoL Edge — All rights reserved.
+// MatchCard.jsx
+// Renders an individual match summary card with core stats and modal trigger.
+// -----------------------------------------------------------------------------
+
 // ----------------- Imports -----------------
 import React, { useState } from 'react';
 import {
@@ -8,7 +14,7 @@ import {
 } from '../data/getChampionImageURL';
 import MatchModal from './MatchModal';
 
-// ----------------- MatchCard Component -----------------
+// ----------------- Component -----------------
 export default function MatchCard({ match, puuid }) {
   if (!match?.info?.participants) {
     return (
@@ -18,11 +24,13 @@ export default function MatchCard({ match, puuid }) {
     );
   }
 
+  // Find current user's match info by PUUID
   const user = match.info.participants.find(
     (p) => p.puuid === (puuid || match.userPuuid)
   );
   if (!user) return null;
 
+  // Destructure important fields from the user
   const {
     championName,
     kills,
@@ -41,6 +49,7 @@ export default function MatchCard({ match, puuid }) {
     item6,
   } = user;
 
+  // ----------------- Mappings -----------------
   const queueMap = {
     420: 'Ranked Solo',
     440: 'Ranked Flex',
@@ -60,10 +69,10 @@ export default function MatchCard({ match, puuid }) {
   const gameDate = new Date(match.info.gameStartTimestamp).toLocaleDateString();
 
   const spellMap = {
-    1: 'Boost', // boost
+    1: 'Boost',
     3: 'Exhaust',
     4: 'Flash',
-    6: 'Haste', //haste
+    6: 'Haste',
     7: 'Heal',
     11: 'Smite',
     12: 'Teleport',
@@ -75,8 +84,10 @@ export default function MatchCard({ match, puuid }) {
 
   const getSpellName = (id) => spellMap[id] || 'Dot';
 
+  // ----------------- State -----------------
   const [modalOpen, setModalOpen] = useState(false);
 
+  // ----------------- Render -----------------
   return (
     <>
       <div
@@ -85,7 +96,7 @@ export default function MatchCard({ match, puuid }) {
         } hover:scale-105 transition cursor-pointer`}
         onClick={() => setModalOpen(true)}
       >
-        {/* Left: Champ Info */}
+        {/* Left Section: Champion Info */}
         <div className="flex items-center gap-3 w-full md:w-1/3">
           <img
             src={getChampionIcon(championName)}
@@ -106,7 +117,7 @@ export default function MatchCard({ match, puuid }) {
           </div>
         </div>
 
-        {/* Center: Stats */}
+        {/* Center Section: Stats & Spells */}
         <div className="flex flex-col items-center gap-2 md:w-1/3">
           <div className="text-white font-semibold text-xl">
             {kills}/{deaths}/{assists}
@@ -115,6 +126,7 @@ export default function MatchCard({ match, puuid }) {
             {totalMinionsKilled} CS • {duration}
           </div>
 
+          {/* Spells */}
           <div className="flex gap-1">
             {[summoner1Id, summoner2Id].map((id, i) => {
               const spell = getSpellName(id);
@@ -142,6 +154,7 @@ export default function MatchCard({ match, puuid }) {
             })}
           </div>
 
+          {/* Items */}
           <div className="flex gap-1 flex-wrap justify-center">
             {[item0, item1, item2, item3, item4, item5, item6].map(
               (item, i) => (
@@ -161,7 +174,7 @@ export default function MatchCard({ match, puuid }) {
           </div>
         </div>
 
-        {/* Right: Result */}
+        {/* Right Section: Result */}
         <div className="text-right md:w-1/3">
           <div
             className={`font-bold text-lg ${

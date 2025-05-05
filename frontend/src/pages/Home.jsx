@@ -1,12 +1,20 @@
 // ----------------- File: Home.jsx -----------------
+// © 2025 LoL Edge — All rights reserved.
+//
+// Home screen UI for the application. Allows users to enter their Riot ID
+// and region to navigate to the summoner search page.
+// --------------------------------------------------
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// ----------------- Home Component -----------------
 export default function Home() {
   const [riotId, setRiotId] = useState('');
   const [region, setRegion] = useState('euw1');
   const navigate = useNavigate();
 
+  // Handle form submission and route to search
   const handleSearch = (e) => {
     e.preventDefault();
     const [name, tag] = riotId.trim().split('#');
@@ -26,6 +34,8 @@ export default function Home() {
         Search for Summoners, Analyze Match History, and Get Smart
         Recommendations!
       </p>
+
+      {/* Riot ID Search Form */}
       <form
         onSubmit={handleSearch}
         className="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-4 hover:shadow-blue-400/50 transition-all w-full max-w-xl"

@@ -1,8 +1,14 @@
+/**
+ * © 2025 LoL Edge — All rights reserved.
+ * ErrorCard.jsx
+ * Displays a simple red alert box for errors such as API failures or user input issues.
+ */
+
 // ----------------- Imports -----------------
 import React from 'react';
 
 // ----------------- ErrorCard Component -----------------
-
+// Props: message (string to be displayed inside the alert)
 export default function ErrorCard({ message }) {
   return (
     <div
@@ -10,7 +16,7 @@ export default function ErrorCard({ message }) {
       role="alert"
       aria-live="assertive"
     >
-      {/* Error Message Display */}
+      {/* Main Error Message */}
       <p className="font-semibold">{message}</p>
     </div>
   );

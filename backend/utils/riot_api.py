@@ -1,26 +1,35 @@
-# --------------------------------------
-#          Imports & Setup
-# --------------------------------------
+# ============================================================
+#  © 2025 LoL Edge – All rights reserved.
+#  Riot API utility functions for LoL Edge backend integration.
+#  Author: Nobody-O
+# ============================================================
+
+# ============================================================
+# IMPORTS & SETUP
+# ============================================================
 
 import os
 
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load API key from .env file
 load_dotenv()
-
-# Riot API Key
 RIOT_API_KEY = os.getenv("RIOT_API_KEY")
-HEADERS = {"X-Riot-Token": RIOT_API_KEY}
 
-# --------------------------------------
-#         Routing Helpers
-# --------------------------------------
+# Default headers for all Riot API calls
+HEADERS = {
+    "X-Riot-Token": RIOT_API_KEY
+}
+
+# ============================================================
+# REGION / PLATFORM ROUTING HELPERS
+# ============================================================
 
 def get_account_route(region):
     """
-    Determines the correct regional routing value for Match-V5 and Account-V1.
+    Maps user-entered platform (e.g. 'euw1') to the correct 
+    regional route used by Match-V5 and Account-V1 APIs.
     """
     if region in ['na1', 'br1', 'la1', 'la2']:
         return 'americas'
@@ -30,96 +39,104 @@ def get_account_route(region):
         return 'asia'
     if region in ['oc1']:
         return 'sea'
-    return 'europe'
+    return 'europe'  # fallback default
+
 
 def get_platform_route(region):
     """
-    Returns the platform routing for Summoner-V4, League-V4, Mastery APIs.
+    Returns the same region string for endpoints that require
+    platform-level routing (e.g., Summoner-V4).
     """
     return region
 
-# --------------------------------------
-#           Account-V1
-# --------------------------------------
+# ============================================================
+# ACCOUNT-V1 – LOOKUP BY RIOT ID
+# ============================================================
 
 def get_summoner_by_riot_id(name, tag):
     """
-    Converts Riot ID (name + tag) into full account info including PUUID.
+    Convert Riot ID (username + tag) into full account info
+    including universal PUUID.
     """
-    account_route = "europe"
+    account_route = "europe"  # Riot ID endpoint is always routed to Europe
     url = f"https://{account_route}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{name}/{tag}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
-# --------------------------------------
-#         Summoner-V4 (by PUUID)
-# --------------------------------------
+# ============================================================
+# SUMMONER-V4 – PROFILE LOOKUP BY PUUID
+# ============================================================
 
 def get_summoner_profile_by_puuid(puuid, platform):
     """
-    Fetch full profile using PUUID (not summonerId!).
+    Fetch full summoner profile using PUUID.
+    Used to retrieve summoner level, name, icon, etc.
     """
     url = f"https://{platform}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
-# --------------------------------------
-#           League-V4
-# --------------------------------------
+# ============================================================
+# LEAGUE-V4 – RANKED LADDER ENTRIES
+# ============================================================
 
 def get_ranked_data(summoner_id, platform):
     """
-    Fetch SoloQ / Flex ranked entries using summonerId (still required here).
+    Fetch SoloQ / Flex ranked data for a given summonerId.
+    Still uses summonerId instead of PUUID for now.
     """
     url = f"https://{platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
-# --------------------------------------
-#      Champion Mastery (PUUID only)
-# --------------------------------------
+# ============================================================
+# CHAMPION MASTERY – PUUID ONLY
+# ============================================================
 
 def get_champion_mastery(puuid, platform):
     """
-    Fetch top champion masteries using PUUID (correct endpoint).
+    Get top champion mastery stats using PUUID.
+    Returns top 100 champions by mastery score.
     """
     url = f"https://{platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/{puuid}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
-# --------------------------------------
-#         Spectator (Live Game)
-# --------------------------------------
+# ============================================================
+# SPECTATOR-V5 – LIVE GAME STATUS
+# ============================================================
 
 def get_live_game_by_puuid(puuid, platform):
     """
-    Fetch live game info using PUUID (not summonerId).
+    Returns live match info if player with given PUUID is
+    currently in a game. Otherwise, raises an error or returns empty.
     """
     url = f"https://{platform}.api.riotgames.com/lol/spectator/v5/active-games/by-puuid/{puuid}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
-# --------------------------------------
-#           Match-V5
-# --------------------------------------
+# ============================================================
+# MATCH-V5 – MATCH HISTORY & DETAILS
+# ============================================================
 
 def get_match_ids(puuid, account_route, count=10):
     """
-    Get recent match IDs by PUUID.
+    Returns a list of recent match IDs for a given player PUUID.
     """
     url = f"https://{account_route}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?count={count}"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     return response.json()
 
+
 def get_match_details(match_id, account_route):
     """
-    Get match details using match ID.
+    Fetch full match data (timeline, stats, teams) from a given match ID.
     """
     url = f"https://{account_route}.api.riotgames.com/lol/match/v5/matches/{match_id}"
     response = requests.get(url, headers=HEADERS)

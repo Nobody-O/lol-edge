@@ -1,9 +1,15 @@
+/**
+ * © 2025 LoL Edge – All rights reserved.
+ * ChampionStats.jsx
+ * Displays summarized performance stats per champion based on the match history.
+ */
+
 // ----------------- Imports -----------------
 import React from 'react';
 import championIdToName from '../data/championIdToName';
 import { FALLBACK_ICON, getChampionIcon } from '../data/getChampionImageURL';
 
-// ----------------- Helper Functions -----------------
+// ----------------- Helper: Calculate Per-Champion Stats -----------------
 function calculateStats(matches, puuid) {
   const statsMap = {};
 
@@ -32,6 +38,7 @@ function calculateStats(matches, puuid) {
     entry.cs += player.totalMinionsKilled + player.neutralMinionsKilled;
   });
 
+  // Transform into array with winrate, KDA, CS
   const stats = Object.entries(statsMap).map(([championId, data]) => {
     const champKey = parseInt(championId);
     const name = championIdToName[champKey] || 'Unknown';
@@ -52,10 +59,12 @@ function calculateStats(matches, puuid) {
     };
   });
 
+  // Return top 10 by number of games played
   return stats.sort((a, b) => b.games - a.games).slice(0, 10);
 }
 
-// ----------------- ChampionStats Component -----------------
+// ----------------- Component: ChampionStats -----------------
+// Props: matches (array of full match JSONs)
 function ChampionStats({ matches }) {
   if (!matches || matches.length === 0) return null;
 
@@ -91,6 +100,7 @@ function ChampionStats({ matches }) {
                   key={champ.championId}
                   className="border-t border-gray-700 hover:bg-gray-700 transition"
                 >
+                  {/* Champion Icon and Name */}
                   <td className="px-4 py-2 flex items-center gap-2">
                     <img
                       src={iconSrc}
@@ -103,6 +113,8 @@ function ChampionStats({ matches }) {
                     />
                     {champ.championName}
                   </td>
+
+                  {/* Stats Columns */}
                   <td className="px-4 py-2">{champ.kda}:1</td>
                   <td className="px-4 py-2">{champ.cs} CS</td>
                   <td className="px-4 py-2">{champ.winrate}%</td>
