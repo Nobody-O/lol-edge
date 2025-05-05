@@ -1,2 +1,19 @@
-.env 
-.env 
+# Node / React / Vite
+node_modules/
+dist/
+.env
+.env.*
+.vite/
+.DS_Store
+
+# Python (backend)
+__pycache__/
+*.pyc
+instance/
+*.db
+
+# VSCode
+.vscode/
+
+# OS
+Thumbs.db
