@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 # Local utility functions for Riot API calls and data processing
-from utils.data_processing import process_summoner_profile
+from utils.data_processing import process_summoner_profile, calculate_kill_participation
 from utils.riot_api import (get_account_route, get_champion_mastery,
                             get_live_game_by_puuid, get_match_details,
                             get_match_ids, get_ranked_data,
@@ -104,6 +104,7 @@ def fetch_summoner_data():
                 try:
                     match = get_match_details(match_id, account_route)
                     match['userPuuid'] = puuid  # Add player context
+                    match['killParticipation'] = calculate_kill_participation(match, puuid)  # ✅ KP%
                     matches.append(match)
                 except Exception as e:
                     print(f"[Warning] Match fetch failed: {e}")
@@ -114,12 +115,14 @@ def fetch_summoner_data():
                 matches = FAKE_MATCHES
                 for match in matches:
                     match['userPuuid'] = puuid
+                    match['killParticipation'] = calculate_kill_participation(match, puuid)
 
         except Exception as e:
             print(f"[Match Fetch Error] {e}")
             matches = FAKE_MATCHES
             for match in matches:
                 match['userPuuid'] = puuid
+                match['killParticipation'] = calculate_kill_participation(match, puuid)
 
         # Filter out malformed match objects
         processed_matches = [

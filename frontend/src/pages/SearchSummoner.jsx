@@ -5,7 +5,7 @@
  */
 
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 // Component imports
@@ -209,8 +209,9 @@ export default function SearchSummoner() {
               </button>
             ))}
           </div>
-
-          <WinrateGraph matches={filteredMatches} />
+          {/* Winrate Graph */}
+          <WinrateGraph matches={visibleMatches} />
+          {/* Champion Stats */}
           <ChampionStats matches={visibleMatches} />
 
           {/* Match Cards Grid */}

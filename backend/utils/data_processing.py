@@ -92,6 +92,7 @@ def process_match_history(matches, puuid):
                 "gameMode": match['info']['gameMode'],
                 "role": participant['teamPosition'],
                 "timePlayed": match['info']['gameDuration'],
+            
                 # Additional fields can be added here if needed
             }
 
@@ -117,3 +118,26 @@ def calculate_winrate(wins, losses):
     if total_games == 0:
         return 0
     return round((wins / total_games) * 100, 1)
+
+# ============================================================
+# HELPER FUNCTION: KILL PARTICIPATION CALCULATION
+# ============================================================
+
+def calculate_kill_participation(match, puuid):
+    """
+    Calculates kill participation percentage for a given player and match.
+    """
+    try:
+        participants = match.get("info", {}).get("participants", [])
+        user = next(p for p in participants if p["puuid"] == puuid)
+        team_id = user["teamId"]
+        team_kills = sum(p["kills"] for p in participants if p["teamId"] == team_id)
+        user_kp = user["kills"] + user["assists"]
+
+        if team_kills == 0:
+            return 0.0
+
+        return round((user_kp / team_kills) * 100, 1)
+    except Exception:
+        return 0.0
+

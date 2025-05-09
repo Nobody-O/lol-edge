@@ -6,7 +6,6 @@
 
 // ----------------- Imports -----------------
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
-import React from 'react';
 import { Pie } from 'react-chartjs-2';
 
 // Register chart.js components
@@ -49,11 +48,12 @@ export default function WinrateGraph({ matches }) {
   const avgCS = avg(sum((p) => p.totalMinionsKilled));
   const avgDmg = avg(sum((p) => p.totalDamageDealtToChampions));
 
-  // Kill Participation
-  const totalKP = sum((p) => p.kills + p.assists);
-  const totalTeamKills = sum((p) => p.teamKills || 0);
-  const avgKP =
-    totalTeamKills > 0 ? Math.round((totalKP / totalTeamKills) * 100) : 0;
+  // Kill Participation (backend provided)
+  const totalKP = matches.reduce(
+    (acc, m) => acc + (m.killParticipation || 0),
+    0
+  );
+  const avgKP = Math.round(totalKP / matches.length);
 
   // Chart.js data structure
   const data = {
