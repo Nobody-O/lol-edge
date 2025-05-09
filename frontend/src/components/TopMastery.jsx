@@ -11,7 +11,11 @@
 
 import React from 'react';
 import championIdToName from '../data/championIdToName';
-import { FALLBACK_ICON, getChampionIcon } from '../data/getChampionImageURL';
+import {
+  FALLBACK_ICON,
+  getChampionIcon,
+  getChampionCDNName,
+} from '../data/getChampionImageURL';
 
 // ----------------------------------------
 // Helper: Capitalize Champion Name
@@ -41,7 +45,8 @@ const TopMastery = ({ masteryData }) => {
         {topThree.map((champ) => {
           const champId = Number(champ.championId);
           const champName = championIdToName[champId] || 'Unknown';
-          const imageUrl = getChampionIcon(champName);
+          const fixedName = getChampionCDNName(champName);
+          const imageUrl = getChampionIcon(fixedName);
 
           return (
             <div

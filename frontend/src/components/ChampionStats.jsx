@@ -7,7 +7,11 @@
 // ----------------- Imports -----------------
 import React from 'react';
 import championIdToName from '../data/championIdToName';
-import { FALLBACK_ICON, getChampionIcon } from '../data/getChampionImageURL';
+import {
+  FALLBACK_ICON,
+  getChampionCDNName,
+  getChampionIcon,
+} from '../data/getChampionImageURL';
 
 // ----------------- Helper: Calculate Per-Champion Stats -----------------
 function calculateStats(matches, puuid) {
@@ -90,10 +94,12 @@ function ChampionStats({ matches }) {
           </thead>
           <tbody>
             {stats.map((champ) => {
-              const iconSrc =
+              const fixedName =
                 champ.championName !== 'Unknown'
-                  ? getChampionIcon(champ.championName)
-                  : FALLBACK_ICON;
+                  ? getChampionCDNName(champ.championName)
+                  : null;
+              const iconSrc =
+                fixedName !== null ? getChampionIcon(fixedName) : FALLBACK_ICON;
 
               return (
                 <tr

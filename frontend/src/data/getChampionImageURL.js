@@ -24,27 +24,31 @@ const FALLBACKS = {
   item0: '/fallbacks/item_blank.png',
 };
 
-// ----------------- Champion Naming Overrides -----------------
+// ----------------- Champion CDN Name Overrides -----------------
 // Riot uses legacy internal names for some champions; override them here
-const overrideMap = {
-  fiddlesticks: 'FiddleSticks',
-  wukong: 'MonkeyKing',
-  chogath: 'Chogath',
-  leblanc: 'Leblanc',
-  khazix: 'Khazix',
-  reksai: 'RekSai',
-  kogmaw: 'KogMaw',
-  velkoz: 'Velkoz',
-  aurelionsol: 'AurelionSol',
-  nunu: 'Nunu',
+const CHAMPION_CDN_OVERRIDES = {
+  Fiddlesticks: 'FiddleSticks',
+  Wukong: 'MonkeyKing',
+  'Renata Glasc': 'Renata',
+  "Bel'Veth": 'Belveth',
+  "K'Sante": 'KSante',
+  "Cho'Gath": 'Chogath',
+  'Nunu & Willump': 'Nunu',
+  'Jarvan IV': 'JarvanIV',
+  'Dr. Mundo': 'DrMundo',
+  LeBlanc: 'Leblanc',
 };
+
+// Return CDN-safe champion name
+export function getChampionCDNName(name) {
+  return CHAMPION_CDN_OVERRIDES[name] || name;
+}
 
 // ----------------- Champion Icon -----------------
 export function getChampionIcon(name) {
   if (!name) return FALLBACK_ICON;
-  const key = name.toLowerCase();
-  const clean = overrideMap[key] || name.replace(/[^a-zA-Z0-9]/g, '');
-  return `${BASE}/img/champion/${clean}.png`;
+  const fixed = getChampionCDNName(name);
+  return `${BASE}/img/champion/${fixed}.png`;
 }
 
 // ----------------- Summoner Spell Icon -----------------

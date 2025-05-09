@@ -5,14 +5,42 @@
 // -----------------------------------------------------------------------------
 
 // ----------------- Imports -----------------
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   FALLBACK_ICON,
   getChampionIcon,
   getItemIcon,
   getSummonerSpellIcon,
 } from '../data/getChampionImageURL';
+import itemIdToName from '../data/itemIdToName';
+import spellIdToName from '../data/spellIdToName';
 import MatchModal from './MatchModal';
+
+const getSpellImageName = (spellName) => {
+  const overrideMap = {
+    Ignite: 'Dot',
+    Ghost: 'Haste',
+    Cleanse: 'Boost',
+    Flee: 'CherryHold',
+  };
+  return overrideMap[spellName] || spellName;
+};
+
+const getChampionCDNName = (champName) => {
+  const overrides = {
+    Fiddlesticks: 'FiddleSticks',
+    Wukong: 'MonkeyKing',
+    'Renata Glasc': 'Renata',
+    "Bel'Veth": 'Belveth',
+    "K'Sante": 'KSante',
+    "Cho'Gath": 'Chogath',
+    'Nunu & Willump': 'Nunu',
+    'Jarvan IV': 'JarvanIV',
+    'Dr. Mundo': 'DrMundo',
+    LeBlanc: 'Leblanc',
+  };
+  return overrides[champName] || champName;
+};
 
 // ----------------- Component -----------------
 export default function MatchCard({ match, puuid }) {
@@ -67,24 +95,7 @@ export default function MatchCard({ match, puuid }) {
     match.info.gameDuration % 60
   }s`;
   const gameDate = new Date(match.info.gameStartTimestamp).toLocaleDateString();
-
-  const spellMap = {
-    1: 'Boost',
-    3: 'Exhaust',
-    4: 'Flash',
-    6: 'Haste',
-    7: 'Heal',
-    11: 'Smite',
-    12: 'Teleport',
-    13: 'Clarity',
-    14: 'Dot',
-    21: 'Barrier',
-    32: 'Mark',
-  };
-
-  const getSpellName = (id) => spellMap[id] || 'Dot';
-
-  // ----------------- State -----------------
+  const fixedChamp = getChampionCDNName(championName);
   const [modalOpen, setModalOpen] = useState(false);
 
   // ----------------- Render -----------------
@@ -99,7 +110,7 @@ export default function MatchCard({ match, puuid }) {
         {/* Left Section: Champion Info */}
         <div className="flex items-center gap-3 w-full md:w-1/3">
           <img
-            src={getChampionIcon(championName)}
+            src={getChampionIcon(fixedChamp)}
             alt={championName}
             className="w-16 h-16 rounded-full border-2 border-gray-300"
             onError={(e) => {
@@ -129,25 +140,18 @@ export default function MatchCard({ match, puuid }) {
           {/* Spells */}
           <div className="flex gap-1">
             {[summoner1Id, summoner2Id].map((id, i) => {
-              const spell = getSpellName(id);
-              const fallback =
-                spell === 'Ignite'
-                  ? '/fallbacks/spell_Ignite.png'
-                  : spell === 'Cleanse'
-                  ? '/fallbacks/spell_Cleanse.png'
-                  : spell === 'Ghost'
-                  ? '/fallbacks/spell_Ghost.png'
-                  : FALLBACK_ICON;
+              const spell = spellIdToName[id] || `Spell ID: ${id}`;
+              const iconKey = getSpellImageName(spell);
               return (
                 <img
                   key={i}
-                  src={getSummonerSpellIcon(spell)}
+                  src={getSummonerSpellIcon(iconKey)}
                   alt={spell}
                   title={spell}
                   className="w-5 h-5"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = fallback;
+                    e.target.src = FALLBACK_ICON;
                   }}
                 />
               );
@@ -162,7 +166,7 @@ export default function MatchCard({ match, puuid }) {
                   key={i}
                   src={getItemIcon(item)}
                   alt={`Item ${item}`}
-                  title={`Item ID: ${item}`}
+                  title={itemIdToName[item] || `Item ID: ${item}`}
                   className="w-5 h-5"
                   onError={(e) => {
                     e.target.onerror = null;

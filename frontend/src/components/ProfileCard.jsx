@@ -10,6 +10,7 @@ import {
   FALLBACK_ICON,
   getProfileIcon,
   getRankBadge,
+  getChampionCDNName,
 } from '../data/getChampionImageURL';
 import TopMastery from './TopMastery';
 
