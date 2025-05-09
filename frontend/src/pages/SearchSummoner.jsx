@@ -4,6 +4,7 @@
  * Author: Nobody-O
  */
 
+// ----------------- Imports -----------------
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -25,6 +26,7 @@ import { API_BASE } from '../config/apiBase';
 // Number of matches shown initially
 const INITIAL_LOAD = 10;
 
+// ----------------- Component -----------------
 export default function SearchSummoner() {
   // Handle URL query parameters (e.g., ?name=Kanenas&tag=xxx)
   const [searchParams] = useSearchParams();
@@ -67,12 +69,12 @@ export default function SearchSummoner() {
         ? [overrideName, overrideTag]
         : riotId.trim().split('#');
 
-    const currentRegion = overrideRegion || region;
-
     if (!name || !tag) {
       setError('Please enter Riot ID in format: Name#Tag');
       return;
     }
+
+    const currentRegion = overrideRegion || region;
 
     setLoading(true);
     setError('');
@@ -85,7 +87,11 @@ export default function SearchSummoner() {
     try {
       // Fetch summoner profile and matches
       const res = await axios.get(`${API_BASE}/summoner`, {
-        params: { name: name.trim(), tag: tag.trim(), region: currentRegion },
+        params: {
+          name: name.trim(),
+          tag: tag.trim(),
+          region: currentRegion,
+        },
       });
 
       setProfile(res.data.profile);
@@ -209,7 +215,8 @@ export default function SearchSummoner() {
               </button>
             ))}
           </div>
-          {/* Winrate Graph */}
+
+          {/* Graph and Stats */}
           <WinrateGraph matches={visibleMatches} />
           {/* Champion Stats */}
           <ChampionStats matches={visibleMatches} />
@@ -220,6 +227,10 @@ export default function SearchSummoner() {
               <MatchCard key={i} match={match} puuid={profile.puuid} />
             ))}
           </div>
+          {/* Debug: Show how many matches are loaded */}
+          <p className="text-yellow-300 text-center mt-2">
+            Loaded {visibleMatches.length} of {filteredMatches.length}
+          </p>
 
           {/* Load More Button */}
           {visibleCount < filteredMatches.length && (

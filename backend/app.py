@@ -96,7 +96,7 @@ def fetch_summoner_data():
         #  Match History Fetch
         # ============================================
         try:
-            match_ids = get_match_ids(puuid, account_route)
+            match_ids = get_match_ids(puuid, account_route, count=50)
             print(f"[Debug] Match IDs fetched: {match_ids}")
             matches = []
 

@@ -11,6 +11,7 @@ import {
   FALLBACK_ICON,
   getChampionCDNName,
   getChampionIcon,
+  CHAMPION_CDN_OVERRIDES,
 } from '../data/getChampionImageURL';
 
 // ----------------- Helper: Calculate Per-Champion Stats -----------------
@@ -94,12 +95,17 @@ function ChampionStats({ matches }) {
           </thead>
           <tbody>
             {stats.map((champ) => {
+              const rawName = champ.championName;
               const fixedName =
-                champ.championName !== 'Unknown'
-                  ? getChampionCDNName(champ.championName)
+                rawName !== 'Unknown'
+                  ? CHAMPION_CDN_OVERRIDES[rawName] ||
+                    getChampionCDNName(rawName)
                   : null;
+              
               const iconSrc =
-                fixedName !== null ? getChampionIcon(fixedName) : FALLBACK_ICON;
+                fixedName !== null
+                  ? getChampionIcon(fixedName)
+                  : FALLBACK_ICON;
 
               return (
                 <tr

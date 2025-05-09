@@ -26,17 +26,25 @@ const FALLBACKS = {
 
 // ----------------- Champion CDN Name Overrides -----------------
 // Riot uses legacy internal names for some champions; override them here
-const CHAMPION_CDN_OVERRIDES = {
+export const CHAMPION_CDN_OVERRIDES = {
   Fiddlesticks: 'FiddleSticks',
   Wukong: 'MonkeyKing',
-  'Renata Glasc': 'Renata',
-  "Bel'Veth": 'Belveth',
-  "K'Sante": 'KSante',
   "Cho'Gath": 'Chogath',
-  'Nunu & Willump': 'Nunu',
-  'Jarvan IV': 'JarvanIV',
-  'Dr. Mundo': 'DrMundo',
+  "Kha'Zix": 'Khazix',
+  "Vel'Koz": 'Velkoz',
+  "Kog'Maw": 'KogMaw',
+  "Rek'Sai": 'RekSai',
   LeBlanc: 'Leblanc',
+  'Nunu & Willump': 'Nunu',
+  'Dr. Mundo': 'DrMundo',
+  'Jarvan IV': 'JarvanIV',
+  "K'Sante": 'KSante',
+  "Bel'Veth": 'Belveth',
+  'Renata Glasc': 'Renata',
+  'Aurelion Sol': 'AurelionSol',
+  'Tahm Kench': 'TahmKench',
+  'Master Yi': 'MasterYi',
+  Mel: 'Mel',
 };
 
 // Return CDN-safe champion name
