@@ -8,23 +8,30 @@
 import React from 'react';
 import championIdToName from '../data/championIdToName';
 import {
+  CHAMPION_CDN_OVERRIDES,
   FALLBACK_ICON,
   getChampionCDNName,
   getChampionIcon,
-  CHAMPION_CDN_OVERRIDES,
 } from '../data/getChampionImageURL';
 
 // ----------------- Helper: Calculate Per-Champion Stats -----------------
 function calculateStats(matches, puuid) {
   const statsMap = {};
 
+  // Hotfix for buggy or missing champion IDs from Riot API
+  const idFixMap = {
+    800: 913, // Sometimes Mel appears as 800
+  };
+
   matches.forEach((match) => {
     const player = match.info?.participants?.find((p) => p.puuid === puuid);
     if (!player) return;
 
     const champId = player.championId;
-    if (!statsMap[champId]) {
-      statsMap[champId] = {
+    const fixedChampId = idFixMap[champId] || champId;
+
+    if (!statsMap[fixedChampId]) {
+      statsMap[fixedChampId] = {
         games: 0,
         wins: 0,
         kills: 0,
@@ -34,7 +41,7 @@ function calculateStats(matches, puuid) {
       };
     }
 
-    const entry = statsMap[champId];
+    const entry = statsMap[fixedChampId];
     entry.games += 1;
     entry.wins += player.win ? 1 : 0;
     entry.kills += player.kills;
@@ -64,8 +71,9 @@ function calculateStats(matches, puuid) {
     };
   });
 
-  // Return top 10 by number of games played
-  return stats.sort((a, b) => b.games - a.games).slice(0, 10);
+  // Return top 10–15 by number of games played
+  console.log('Champion stats:', stats);
+  return stats.sort((a, b) => b.games - a.games).slice(0, 15);
 }
 
 // ----------------- Component: ChampionStats -----------------
@@ -101,11 +109,9 @@ function ChampionStats({ matches }) {
                   ? CHAMPION_CDN_OVERRIDES[rawName] ||
                     getChampionCDNName(rawName)
                   : null;
-              
+
               const iconSrc =
-                fixedName !== null
-                  ? getChampionIcon(fixedName)
-                  : FALLBACK_ICON;
+                fixedName !== null ? getChampionIcon(fixedName) : FALLBACK_ICON;
 
               return (
                 <tr
