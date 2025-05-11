@@ -55,13 +55,27 @@ export function getChampionCDNName(name) {
 // ----------------- Champion Icon -----------------
 export function getChampionIcon(name) {
   if (!name) return FALLBACK_ICON;
+
   const key = name.toLowerCase();
   const override =
     CHAMPION_CDN_OVERRIDES[name] ||
     CHAMPION_CDN_OVERRIDES[key] ||
     name.replace(/[^a-zA-Z0-9]/g, '');
-  return `${BASE}/img/champion/${override}.png`;
+
+  let fileName;
+
+  // Special-case Fiddlesticks
+  if (override === 'FiddleSticks') {
+    fileName = 'Fiddlesticks';
+  } else {
+    fileName = override;
+  }
+
+  console.log('[getChampionIcon] Resolved icon for:', name, '→', fileName);
+  return `${BASE}/img/champion/${fileName}.png`;
 }
+
+
 
 
 // ----------------- Summoner Spell Icon -----------------

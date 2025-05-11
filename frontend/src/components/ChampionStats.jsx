@@ -109,6 +109,7 @@ function ChampionStats({ matches }) {
                   ? CHAMPION_CDN_OVERRIDES[rawName] ||
                     getChampionCDNName(rawName)
                   : null;
+                  console.log('Rendering champ icon for:',rawName,'→',fixedName);
 
               const iconSrc =
                 fixedName !== null ? getChampionIcon(fixedName) : FALLBACK_ICON;

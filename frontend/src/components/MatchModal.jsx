@@ -4,7 +4,7 @@
  * Author: Nobody-O
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   FALLBACK_ICON,
@@ -44,6 +44,15 @@ const getChampionCDNName = (champName) => {
 };
 
 export default function MatchModal({ match, onClose }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   if (!match || !match.info) return null;
 
   const { info } = match;
