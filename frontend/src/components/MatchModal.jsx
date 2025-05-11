@@ -61,6 +61,7 @@ export default function MatchModal({ match, onClose }) {
   };
 
   const renderPlayer = (player) => {
+    console.log('Rendering Player:', player);
     const fixedChamp = getChampionCDNName(player.championName);
 
     return (
@@ -78,14 +79,22 @@ export default function MatchModal({ match, onClose }) {
               e.target.src = FALLBACK_ICON;
             }}
           />
-          <div>
-            <p className="text-white font-bold">{player.summonerName}</p>
-            <p className="text-gray-400 text-xs">{player.championName}</p>
+          <div className="flex flex-col">
+            <div className="relative group w-fit max-w-[6.5rem]">
+              <span className="text-white font-medium text-sm truncate overflow-hidden whitespace-nowrap inline-block w-full">
+                {player.riotIdGameName.length > 9
+                  ? `${player.riotIdGameName.slice(0, 9)}...`
+                  : player.riotIdGameName}
+              </span>
+              <div className="absolute top-[-1.5rem] left-0 bg-black text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-100 pointer-events-none z-50">
+                {player.riotIdGameName}#{player.riotIdTagline || ''}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="text-center w-1/6">
-          <p className="text-white font-medium">
+          <p className="text-white font-normal">
             {player.kills}/{player.deaths}/{player.assists}
           </p>
           <p className="text-gray-400 text-xs">

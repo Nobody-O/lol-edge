@@ -101,11 +101,26 @@ def fetch_summoner_data():
             matches = []
 
             for match_id in match_ids:
-                try:
-                    match = get_match_details(match_id, account_route)
-                    match['userPuuid'] = puuid  # Add player context
-                    match['killParticipation'] = calculate_kill_participation(match, puuid)  #KP%
-                    matches.append(match)
+    try:
+        match = get_match_details(match_id, account_route)
+        match['userPuuid'] = puuid
+        match['killParticipation'] = calculate_kill_participation(match, puuid)
+
+        # Inject summoner names (riotIdGameName + tagLine) into each participant
+        for participant in match.get("info", {}).get("participants", []):
+            try:
+                participant_puuid = participant.get("puuid")
+                if participant_puuid:
+                    profile = get_summoner_profile_by_puuid(participant_puuid, platform)
+                    participant["riotIdGameName"] = profile.get("gameName", "")
+                    participant["riotIdTagline"] = profile.get("tagLine", "")
+            except Exception as lookup_error:
+                print(f"[Name Fetch Error] for {participant_puuid}: {lookup_error}")
+                participant["riotIdGameName"] = ""
+                participant["riotIdTagline"] = ""
+
+        matches.append(match)
+
                 except Exception as e:
                     print(f"[Warning] Match fetch failed: {e}")
 
