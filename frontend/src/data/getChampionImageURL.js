@@ -55,9 +55,14 @@ export function getChampionCDNName(name) {
 // ----------------- Champion Icon -----------------
 export function getChampionIcon(name) {
   if (!name) return FALLBACK_ICON;
-  const fixed = getChampionCDNName(name);
-  return `${BASE}/img/champion/${fixed}.png`;
+  const key = name.toLowerCase();
+  const override =
+    CHAMPION_CDN_OVERRIDES[name] ||
+    CHAMPION_CDN_OVERRIDES[key] ||
+    name.replace(/[^a-zA-Z0-9]/g, '');
+  return `${BASE}/img/champion/${override}.png`;
 }
+
 
 // ----------------- Summoner Spell Icon -----------------
 export function getSummonerSpellIcon(spellName) {
