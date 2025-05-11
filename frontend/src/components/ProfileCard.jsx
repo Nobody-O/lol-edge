@@ -5,7 +5,7 @@
  */
 
 // ----------------- Imports -----------------
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   FALLBACK_ICON,
   getProfileIcon,
@@ -107,11 +107,14 @@ export default function ProfileCard({ profile }) {
           }}
         />
         <div>
-          <h2 className="text-3xl font-bold text-white">{summonerName}</h2>
+          <h2 className="text-3xl font-extrabold text-white">{summonerName}</h2>
           <p className="text-gray-400 text-lg">Level {summonerLevel}</p>
+          <p className="text-sm text-gray-400">
+            Riot ID: <span className="text-white font-normal">{riotId}</span>
+          </p>
           <button
             onClick={handleCopy}
-            className="mt-2 text-blue-400 hover:text-blue-500 text-sm underline transition"
+            className="mt-1 text-blue-400 hover:text-blue-500 text-sm underline transition"
           >
             {copied ? '✅ Riot ID Copied!' : 'Copy Riot ID'}
           </button>

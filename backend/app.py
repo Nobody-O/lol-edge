@@ -104,7 +104,7 @@ def fetch_summoner_data():
                 try:
                     match = get_match_details(match_id, account_route)
                     match['userPuuid'] = puuid  # Add player context
-                    match['killParticipation'] = calculate_kill_participation(match, puuid)  # ✅ KP%
+                    match['killParticipation'] = calculate_kill_participation(match, puuid)  #KP%
                     matches.append(match)
                 except Exception as e:
                     print(f"[Warning] Match fetch failed: {e}")
